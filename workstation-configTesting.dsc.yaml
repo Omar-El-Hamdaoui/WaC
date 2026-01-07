@@ -1,0 +1,15 @@
+$schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/v3/bundled/config/document.json
+resources:
+
+- name: MyChocolateyPackage - webdeploy
+  type: MyCompany.Packages/ChocolateyPackage
+  properties:
+    packageName: webdeploy
+    ensure: Present
+    version: latest    
+- name: MyChocolateyPackage - winmerge
+  type: MyCompany.Packages/ChocolateyPackage
+  properties:
+    packageName: winmerge
+    ensure: Present
+    version: latest 
