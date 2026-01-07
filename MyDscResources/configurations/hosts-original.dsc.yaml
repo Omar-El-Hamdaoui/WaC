@@ -1,0 +1,7 @@
+$schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/2024/04/config/document.json
+resources:
+  - name: MyHosts - PACA
+    type: MyHosts/Hosts
+    properties:
+      Name: PACA
+      Path: C:\WaC\resources\hosts

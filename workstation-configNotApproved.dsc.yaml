@@ -1,0 +1,102 @@
+$schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/v3/bundled/config/document.json
+resources:
+- name: Registry - HideFileExt
+  type: Microsoft.Windows/Registry
+  properties:
+    keyPath: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+    valueName: HideFileExt
+    valueData:
+      DWord: 0
+- name: Registry - DisableLoopbackCheck
+  type: Microsoft.Windows/Registry
+  properties:
+    keyPath: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa
+    valueName: DisableLoopbackCheck
+    valueData:
+      DWord: 1
+
+
+
+
+#WinGet Packages Part
+
+
+- name: WinGetPackage - Fork.Fork
+  type: Microsoft.WinGet.DSC/WinGetPackageManager
+  properties:
+    Id: Fork.Fork
+- name: WinGetPackage - Microsoft.PowerShell
+  type: Microsoft.WinGet.DSC/WinGetPackageManager
+  properties:
+    Id: Microsoft.PowerShell
+- name: WinGetPackage - Microsoft.PowerToys
+  type: Microsoft.WinGet.DSC/WinGetPackageManager
+  properties:
+    Id: Microsoft.PowerToys
+- name: WinGetPackage - Microsoft.PowerAutomateDesktop
+  type: Microsoft.WinGet.DSC/WinGetPackageManager
+  properties:
+    Id: Microsoft.PowerAutomateDesktop
+- name: WinGetPackage - Microsoft.PowerBI
+  type: Microsoft.WinGet.DSC/WinGetPackageManager
+  properties:
+    Id: Microsoft.PowerBI
+- name: WinGetPackage - Microsoft.VisualStudioCode
+  type: Microsoft.WinGet.DSC/WinGetPackageManager
+  properties:
+    Id: Microsoft.VisualStudioCode
+- name: WinGetPackage - Google.Chrome
+  type: Microsoft.WinGet.DSC/WinGetPackageManager
+  properties:
+    Id: Google.Chrome
+- name: WinGetPackage - HP.ImageAssistant
+  type: Microsoft.WinGet.DSC/WinGetPackageManager
+  properties:
+    Id: HP.ImageAssistant
+
+
+#Certificates Part    
+
+- name: MyCertificate - CR-PACA
+  type: MyCertificate/Certificate
+  properties:
+    Path: C:\WaC\resources\certificates\_.cr-paca.fr.crt
+- name: MyCertificate - AC-PACA
+  type: MyCertificate/Certificate
+  properties:
+    Path: C:\WaC\resources\certificates\Autorite de Certification Region SUD Provence-Alpes-Cote d'Azur.crt
+
+#Hosts Part
+- name: MyHosts - PACA
+  type: MyHosts/Hosts
+  properties:
+    Name: PACA
+    Path: C:\WaC\resources\hosts
+
+#MyWindowsDefenderExclusion
+
+- name: MyWindowsDefenderExclusion - C:\Projets
+  type: MyWindowsDefenderExclusion/WindowsDefenderExclusion
+  properties:
+    Value: C:\Projets
+    Type: Path
+- name: MyWindowsDefenderExclusion - C:\Users\%user%\.dotnet\tools
+  type: MyWindowsDefenderExclusion/WindowsDefenderExclusion
+  properties:
+    Value: C:\Users\%user%\.dotnet\tools
+    Type: Path
+- name: MyWindowsDefenderExclusion - C:\Users\%user%\scoop
+  type: MyWindowsDefenderExclusion/WindowsDefenderExclusion
+  properties:
+    Value: C:\Users\%user%\scoop
+    Type: Path
+
+
+#Chocolatey Part
+  
+- name: MyChocolateyPackage - urlrewrite
+  type: MyCompany.Packages/ChocolateyPackage
+  properties:
+    packageName: urlrewrite
+    ensure: Present
+    version: latest    

@@ -1,0 +1,26 @@
+$schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/v3/config/document.json
+metadata:
+  name: InstallChocolateyConfig
+  description: Installs or removes the Chocolatey package manager using DSC v3
+
+parameters:
+  ChocolateyPath:
+    type: string
+    defaultValue: C:\ProgramData\chocolatey\choco.exe
+  Ensure:
+    type: string
+    defaultValue: Present
+    allowedValues:
+      - Present
+      - Absent
+
+variables:
+  installScriptUrl: https://community.chocolatey.org/install.ps1
+
+resources:
+  - name: Chocolatey Installation
+    type: MyCompany.Installer/MyChocolatey
+    properties:
+      Path: "[parameters('ChocolateyPath')]"
+      Ensure: "[parameters('Ensure')]"
+      ScriptUrl: "[variables('installScriptUrl')]"

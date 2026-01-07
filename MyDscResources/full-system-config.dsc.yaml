@@ -1,0 +1,52 @@
+$schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/v3/config/document.json
+metadata:
+  name: DevelopmentWorkstationSetup
+  description: Configuration d'un poste de développement 
+  version: 1.0.0
+
+variables:
+  configPath: C:\DevConfig
+
+resources:
+  - name: Install Chocolatey Package Manager
+    type: MyCompany.Installer/MyChocolatey
+    properties:
+      name: Chocolatey
+      ensure: Present
+    dependsOn: []
+
+  - name: Chocolatey Package - git
+    type: MyCompany.Packages/ChocolateyPackage
+    properties:
+      packageName: git
+      ensure: Present
+    dependsOn:
+    - "[resourceId('MyCompany.Installer/MyChocolatey', 'Install Chocolatey Package Manager')]"
+
+  - name: Chocolatey Package - 7zip
+    type: MyCompany.Packages/ChocolateyPackage
+    properties:
+      packageName: 7zip
+      ensure: Present
+    dependsOn:
+    - "[resourceId('MyCompany.Installer/MyChocolatey', 'Install Chocolatey Package Manager')]"
+
+  - name: Chocolatey Package - postman
+    type: MyCompany.Packages/ChocolateyPackage
+    properties:
+      packageName: postman
+      ensure: Present
+    dependsOn:
+    - "[resourceId('MyCompany.Installer/MyChocolatey', 'Install Chocolatey Package Manager')]"
+
+  - name: Development Tools List
+    type: MyCompany.Storage/FileManager
+    properties:
+      path: "[concat(variables('configPath'), '\\tools.txt')]"
+      content: |
+        Development Tools Installed:
+        - Chocolatey Package Manager
+        - Custom DSC Resources
+        Configuration Path: C:\DevConfig
+        Logs Path: C:\DevConfig\logs
+      ensure: Present

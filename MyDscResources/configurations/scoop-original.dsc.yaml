@@ -1,0 +1,7 @@
+$schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/2024/04/config/document.json
+resources:
+  - name: Install Scoop
+    type: MyCompany.Installer/MyScoop
+    properties:
+      name: Scoop
+      ensure: Present

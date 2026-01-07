@@ -15,52 +15,30 @@ $inputObject = if ($inputJson) {
         $inputJson | ConvertFrom-Json 
     }
     catch {
-        @{ name = 'Scoop'; ensure = 'Present' }
+        @{ name = 'Chocolatey'; ensure = 'Present' }
     }
 } else { 
-    @{ name = 'Scoop'; ensure = 'Present' } 
+    @{ name = 'Chocolatey'; ensure = 'Present' } 
 }
 
 #region Helper Functions
 
-function Test-ScoopInstalled {
+function Test-ChocolateyInstalled {
     try {
-        $scoopCommand = Get-Command scoop -ErrorAction SilentlyContinue
-        return $null -ne $scoopCommand
+        $chocoPath = "$env:ProgramData\chocolatey\choco.exe"
+        return (Test-Path $chocoPath)
     }
     catch {
         return $false
     }
 }
 
-function Get-ScoopVersion {
+function Get-ChocolateyVersion {
     try {
-        if (Test-ScoopInstalled) {
-            $version = & scoop --version 2>$null
-            if ($version -match 'v?(\d+\.\d+\.\d+)') {
-                return $Matches[1]
-            }
+        if (Test-ChocolateyInstalled) {
+            $version = & "$env:ProgramData\chocolatey\choco.exe" --version 2>$null
             return $version.Trim()
         }
-        return $null
-    }
-    catch {
-        return $null
-    }
-}
-
-function Get-ScoopPath {
-    try {
-        # Scoop peut être installé dans plusieurs emplacements
-        if ($env:SCOOP) {
-            return $env:SCOOP
-        }
-        
-        $defaultPath = Join-Path $env:USERPROFILE 'scoop'
-        if (Test-Path $defaultPath) {
-            return $defaultPath
-        }
-        
         return $null
     }
     catch {
@@ -76,24 +54,20 @@ function Get-ResourceState {
     param($InputObject)
     
     try {
-        $isInstalled = Test-ScoopInstalled
+        $isInstalled = Test-ChocolateyInstalled
         
         $state = @{
-            name = if ($InputObject.name) { $InputObject.name } else { 'Scoop' }
+            name = if ($InputObject.name) { $InputObject.name } else { 'Chocolatey' }
             ensure = if ($isInstalled) { 'Present' } else { 'Absent' }
         }
         
         # Ajouter des infos supplémentaires si installé
         if ($isInstalled) {
-            $version = Get-ScoopVersion
+            $version = Get-ChocolateyVersion
             if ($version) {
                 $state.version = $version
             }
-            
-            $installPath = Get-ScoopPath
-            if ($installPath) {
-                $state.installPath = $installPath
-            }
+            $state.installPath = "$env:ProgramData\chocolatey"
         }
         
         return $state
@@ -101,7 +75,7 @@ function Get-ResourceState {
     catch {
         # En cas d'erreur, retourner un état minimal valide
         return @{
-            name = if ($InputObject.name) { $InputObject.name } else { 'Scoop' }
+            name = if ($InputObject.name) { $InputObject.name } else { 'Chocolatey' }
             ensure = 'Absent'
             error = $_.Exception.Message
         }
@@ -123,7 +97,7 @@ function Test-ResourceState {
     catch {
         # Retourner un état avec erreur mais JSON valide
         return @{
-            name = if ($InputObject.name) { $InputObject.name } else { 'Scoop' }
+            name = if ($InputObject.name) { $InputObject.name } else { 'Chocolatey' }
             ensure = 'Absent'
             _inDesiredState = $false
             error = $_.Exception.Message
@@ -142,32 +116,34 @@ function Set-ResourceState {
         # Ne faire des changements que si nécessaire
         if ($currentState.ensure -ne $desiredEnsure) {
             if ($desiredEnsure -eq 'Present') {
-                # Installer Scoop
-                if (-not (Test-ScoopInstalled)) {
+                # Installer Chocolatey
+                if (-not (Test-ChocolateyInstalled)) {
                     try {
-                        # Configuration de la sécurité (comme Chocolatey)
+                        # Configuration de la sécurité
                         Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction SilentlyContinue
                         [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
                         
-                        # Note: Ajout de https:// explicite ci-dessous pour éviter les erreurs
-                        $installScript = Invoke-RestMethod -Uri 'https://get.scoop.sh' -UseBasicParsing -ErrorAction Stop
+                        # Télécharger et exécuter le script d'installation
+                        $installScript = Invoke-RestMethod -Uri 'https://community.chocolatey.org/install.ps1' -UseBasicParsing -ErrorAction Stop
                         
                         # Exécuter dans un bloc try-catch séparé
                         try {
-                            Invoke-Expression "& {$installScript} -RunAsAdmin"
+                            Invoke-Expression $installScript
                         }
                         catch {
-                            # Vérifier si Scoop est maintenant installé malgré les erreurs (warnings)
-                            if (-not (Test-ScoopInstalled)) {
+                            # L'installation peut générer des warnings, mais réussir quand même
+                            # Vérifier si Chocolatey est maintenant installé
+                            if (-not (Test-ChocolateyInstalled)) {
                                 throw "Installation failed: $_"
                             }
                         }
                         
-                        # Rafraîchir PATH et environnement
+                        # Rafraîchir PATH
                         $env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' + 
                                     [System.Environment]::GetEnvironmentVariable('Path', 'User')
                     }
                     catch {
+                        # Retourner l'état avec l'erreur mais ne pas exit 1
                         $errorState = Get-ResourceState -InputObject $InputObject
                         $errorState.error = "Installation failed: $($_.Exception.Message)"
                         return $errorState
@@ -175,16 +151,18 @@ function Set-ResourceState {
                 }
             }
             elseif ($desiredEnsure -eq 'Absent') {
-                # Désinstaller Scoop
-                if (Test-ScoopInstalled) {
+                # Désinstaller Chocolatey
+                if (Test-ChocolateyInstalled) {
                     try {
-                        $scoopPath = Get-ScoopPath
-                        if ($scoopPath -and (Test-Path $scoopPath)) {
-                            Remove-Item -Path $scoopPath -Recurse -Force -ErrorAction Stop
+                        $chocoPath = "$env:ProgramData\chocolatey"
+                        
+                        # Supprimer le répertoire Chocolatey
+                        if (Test-Path $chocoPath) {
+                            Remove-Item -Path $chocoPath -Recurse -Force -ErrorAction Stop
                         }
                         
-                        # Nettoyer les variables d'environnement Scoop
-                        $envVars = @('SCOOP', 'SCOOP_GLOBAL')
+                        # Nettoyer les variables d'environnement
+                        $envVars = @('ChocolateyInstall', 'ChocolateyToolsLocation', 'ChocolateyLastPathUpdate')
                         $scopes = @([System.EnvironmentVariableTarget]::Machine, [System.EnvironmentVariableTarget]::User)
                         
                         foreach ($envVar in $envVars) {
@@ -195,7 +173,9 @@ function Set-ResourceState {
                                         [System.Environment]::SetEnvironmentVariable($envVar, $null, $scope)
                                     }
                                 }
-                                catch {}
+                                catch {
+                                    # Continuer même si une variable ne peut pas être supprimée
+                                }
                             }
                         }
                         
@@ -204,14 +184,17 @@ function Set-ResourceState {
                             try {
                                 $path = [System.Environment]::GetEnvironmentVariable('Path', $scope)
                                 if ($path) {
-                                    $newPath = ($path -split ';' | Where-Object { $_ -notlike '*scoop*' }) -join ';'
+                                    $newPath = ($path -split ';' | Where-Object { $_ -notlike '*chocolatey*' }) -join ';'
                                     [System.Environment]::SetEnvironmentVariable('Path', $newPath, $scope)
                                 }
                             }
-                            catch {}
+                            catch {
+                                # Continuer même si PATH ne peut pas être modifié
+                            }
                         }
                     }
                     catch {
+                        # Retourner l'état avec l'erreur mais ne pas exit 1
                         $errorState = Get-ResourceState -InputObject $InputObject
                         $errorState.error = "Uninstallation failed: $($_.Exception.Message)"
                         return $errorState
@@ -224,6 +207,7 @@ function Set-ResourceState {
         return Get-ResourceState -InputObject $InputObject
     }
     catch {
+        # En cas d'erreur générale, retourner un état avec l'erreur
         $errorState = Get-ResourceState -InputObject $InputObject
         $errorState.error = $_.Exception.Message
         return $errorState
@@ -240,14 +224,17 @@ try {
         'Set'  { Set-ResourceState -InputObject $inputObject }
     }
     
+    # Sortie en JSON (toujours réussir avec un JSON valide)
     $jsonOutput = $result | ConvertTo-Json -Compress -Depth 10
     Write-Output $jsonOutput
     
+    # Exit 0 même si des erreurs mineures sont présentes
     exit 0
 }
 catch {
+    # Dernier filet de sécurité : retourner un JSON d'erreur mais exit 0
     $errorOutput = @{
-        name = if ($inputObject.name) { $inputObject.name } else { 'Scoop' }
+        name = if ($inputObject.name) { $inputObject.name } else { 'Chocolatey' }
         ensure = 'Absent'
         error = $_.Exception.Message
         _inDesiredState = $false
@@ -256,5 +243,6 @@ catch {
     $jsonOutput = $errorOutput | ConvertTo-Json -Compress -Depth 10
     Write-Output $jsonOutput
     
+    # Exit 0 pour que DSC puisse lire le JSON d'erreur
     exit 0
 }

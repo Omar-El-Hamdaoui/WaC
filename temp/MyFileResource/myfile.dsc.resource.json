@@ -1,0 +1,56 @@
+{
+  "$schema": "https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/v3/resource/manifest.json",
+  "type": "MyCompany.Storage/FileManager",
+  "version": "1.0.0",
+  "description": "Manages files and their content",
+  "get": {
+    "executable": "pwsh",
+    "args": ["-NoLogo", "-NonInteractive", "-NoProfile", "-Command", "./myfile.ps1"],
+    "input": "stdin"
+  },
+  "set": {
+    "executable": "pwsh",
+    "args": ["-NoLogo", "-NonInteractive", "-NoProfile", "-Command", "./myfile.ps1", "Set"],
+    "input": "stdin",
+    "return": "state"
+  },
+  "test": {
+    "executable": "pwsh",
+    "args": ["-NoLogo", "-NonInteractive", "-NoProfile", "-Command", "./myfile.ps1", "Test"],
+    "input": "stdin",
+    "return": "state"
+  },
+  "export": {
+    "executable": "pwsh",
+    "args": ["-NoProfile", "-Command", "./myfile.ps1", "Export"]
+  },
+  "schema": {
+    "embedded": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://mycompany.com/schemas/filemanager.json",
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Path to the file"
+        },
+        "content": {
+          "type": "string",
+          "description": "File content"
+        },
+        "ensure": {
+          "type": "string",
+          "enum": ["Present", "Absent"],
+          "description": "Whether file should exist",
+          "default": "Present"
+        },
+        "_inDesiredState": {
+          "type": "boolean",
+          "description": "Indicates whether the DSC resource instance is in desired state.",
+          "readOnly": true
+        }
+      },
+      "required": ["path"]
+    }
+  }
+}

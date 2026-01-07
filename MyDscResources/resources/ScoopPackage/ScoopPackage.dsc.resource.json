@@ -1,0 +1,64 @@
+{
+  "$schema": "https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/v3/resource/manifest.json",
+  "type": "MyCompany.Packages/ScoopPackage",
+  "version": "0.0.1",
+  "description": "Manages Scoop packages installation and updates",
+  "get": {
+    "executable": "pwsh",
+    "args": [
+      "-NoProfile",
+      "-NonInteractive",
+      "-File",
+      "./ScoopPackage.ps1",
+      "Get"
+    ],
+    "input": "stdin"
+  },
+  "set": {
+    "executable": "pwsh",
+    "args": [
+      "-NoProfile",
+      "-NonInteractive",
+      "-File",
+      "./ScoopPackage.ps1",
+      "Set"
+    ],
+    "input": "stdin",
+    "implementsPretest": true
+  },
+  "test": {
+    "executable": "pwsh",
+    "args": [
+      "-NoProfile",
+      "-NonInteractive",
+      "-File",
+      "./ScoopPackage.ps1",
+      "Test"
+    ],
+    "input": "stdin"
+  },
+  "schema": {
+    "embedded": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": ["packageName"],
+      "properties": {
+        "packageName": {
+          "type": "string",
+          "description": "Name of the Scoop package"
+        },
+        "version": {
+          "type": "string",
+          "description": "Version to install ('latest' for most recent)",
+          "default": "latest"
+        },
+        "ensure": {
+          "type": "string",
+          "enum": ["Present", "Absent"],
+          "description": "Whether the package should be installed or removed",
+          "default": "Present"
+        }
+      }
+    }
+  }
+}

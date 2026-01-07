@@ -1,0 +1,13 @@
+$schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/2024/04/config/document.json
+resources:
+  - name: Node LTS
+    type: MyCompany.NodeJs/NodeVersion
+    properties:
+      version: lts
+      ensure: Used
+
+  - name: Node 18
+    type: MyCompany.NodeJs/NodeVersion
+    properties:
+      version: "18"
+      ensure: Present

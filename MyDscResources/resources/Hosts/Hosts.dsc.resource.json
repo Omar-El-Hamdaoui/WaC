@@ -1,0 +1,77 @@
+{
+  "$schema": "https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/2024/04/resource/manifest.json",
+  "type": "MyHosts/Hosts",
+  "version": "0.0.1",
+  "description": "Manages Windows hosts files in the etc directory",
+  "get": {
+    "executable": "pwsh",
+    "args": [
+      "-NoLogo",
+      "-NonInteractive",
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "./Hosts.ps1",
+      "-Operation",
+      "Get"
+    ],
+    "input": "stdin"
+  },
+  "set": {
+    "executable": "pwsh",
+    "args": [
+      "-NoLogo",
+      "-NonInteractive",
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "./Hosts.ps1",
+      "-Operation",
+      "Set"
+    ],
+    "input": "stdin",
+    "return": "state"
+  },
+  "test": {
+    "executable": "pwsh",
+    "args": [
+      "-NoLogo",
+      "-NonInteractive",
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "./Hosts.ps1",
+      "-Operation",
+      "Test"
+    ],
+    "input": "stdin",
+    "return": "state"
+  },
+  "schema": {
+    "embedded": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "Hosts",
+      "type": "object",
+      "required": ["Name"],
+      "properties": {
+        "Name": {
+          "type": "string",
+          "description": "Name of the hosts file (used as key)"
+        },
+        "Path": {
+          "type": "string",
+          "description": "Path to the source hosts file"
+        },
+        "Ensure": {
+          "type": "string",
+          "enum": ["Present", "Absent"],
+          "default": "Present",
+          "description": "Desired state of the hosts file"
+        }
+      }
+    }
+  }
+}

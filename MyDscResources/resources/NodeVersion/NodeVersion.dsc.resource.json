@@ -1,0 +1,41 @@
+{
+  "$schema": "https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/v3/resource/manifest.json",
+  "type": "MyCompany.NodeJs/NodeVersion",
+  "version": "0.0.1",
+  "description": "Manages Node.js versions via nvm",
+  "get": {
+    "executable": "pwsh",
+    "args": ["-NoProfile", "-NonInteractive", "-File", "./NodeVersion.ps1", "Get"],
+    "input": "stdin"
+  },
+  "set": {
+    "executable": "pwsh",
+    "args": ["-NoProfile", "-NonInteractive", "-File", "./NodeVersion.ps1", "Set"],
+    "input": "stdin",
+    "implementsPretest": true
+  },
+  "test": {
+    "executable": "pwsh",
+    "args": ["-NoProfile", "-NonInteractive", "-File", "./NodeVersion.ps1", "Test"],
+    "input": "stdin"
+  },
+  "schema": {
+    "embedded": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": ["version"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Node version: 'lts', 'latest', or major version number (e.g. '20')"
+        },
+        "ensure": {
+          "type": "string",
+          "enum": ["Present", "Absent", "Used"],
+          "description": "Present=installed, Used=installed+active, Absent=removed",
+          "default": "Present"
+        }
+      }
+    }
+  }
+}

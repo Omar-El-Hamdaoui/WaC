@@ -1,0 +1,83 @@
+{
+  "$schema": "https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/v3/resource/manifest.json",
+  "type": "MyWindowsDefenderExclusion/WindowsDefenderExclusion",
+  "version": "0.0.1",
+  "description": "Manages Windows Defender exclusions for paths, extensions, processes, and IP addresses",
+  "get": {
+    "executable": "pwsh",
+    "args": [
+      "-NoLogo",
+      "-NonInteractive",
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "./WindowsDefenderExclusion.ps1",
+      "-Operation",
+      "Get"
+    ],
+    "input": "stdin"
+  },
+  "set": {
+    "executable": "pwsh",
+    "args": [
+      "-NoLogo",
+      "-NonInteractive",
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "./WindowsDefenderExclusion.ps1",
+      "-Operation",
+      "Set"
+    ],
+    "input": "stdin",
+    "return": "state"
+  },
+  "test": {
+    "executable": "pwsh",
+    "args": [
+      "-NoLogo",
+      "-NonInteractive",
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "./WindowsDefenderExclusion.ps1",
+      "-Operation",
+      "Test"
+    ],
+    "input": "stdin",
+    "return": "state"
+  },
+  "schema": {
+    "embedded": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "WindowsDefenderExclusion",
+      "type": "object",
+      "required": ["Type", "Value"],
+      "properties": {
+        "Name": {
+          "type": "string",
+          "default": "WindowsDefenderPreference",
+          "description": "Name identifier for the exclusion (used as key)"
+        },
+        "Type": {
+          "type": "string",
+          "enum": ["Path", "Extension", "Process", "IpAddress"],
+          "description": "Type of exclusion to configure"
+        },
+        "Value": {
+          "type": "string",
+          "description": "The value to exclude (path, extension, process name, or IP address)"
+        },
+        "Ensure": {
+          "type": "string",
+          "enum": ["Present", "Absent"],
+          "default": "Present",
+          "description": "Desired state of the exclusion"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+$schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/v3/bundled/config/document.json
+resources:
+- name: MyScoop
+  type: MyCompany.Installer/MyScoop
+  properties: 
+    name: Scoop
+    ensure: Present
+- name: Scoop Package - dotnet-sdk
+  type: MyCompany.Packages/ScoopPackage
+  properties:
+    packageName: dotnet-sdk
+    ensure: Present
+    version: latest
+- name: Scoop Package - 1password-cli
+  type: MyCompany.Packages/ScoopPackage
+  properties:
+    packageName: 1password-cli
+    ensure: Present
+    version: latest

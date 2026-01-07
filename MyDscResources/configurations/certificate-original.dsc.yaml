@@ -1,0 +1,10 @@
+$schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/2024/04/config/document.json
+resources:
+  - name: MyCertificate - CR-PACA
+    type: MyCertificate/Certificate
+    properties:
+      Path: C:\WaC\resources\certificates\_.cr-paca.fr.crt
+  - name: MyCertificate - AC-PACA
+    type: MyCertificate/Certificate
+    properties:
+      Path: C:\WaC\resources\certificates\Autorite de Certification Region SUD Provence-Alpes-Cote d'Azur.crt

@@ -1,0 +1,88 @@
+{
+  "$schema": "https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/2024/04/resource/manifest.json",
+  "type": "MyCertificate/Certificate",
+  "version": "0.0.1",
+  "description": "Manages X509 certificates in Windows certificate stores",
+  "get": {
+    "executable": "pwsh",
+    "args": [
+      "-NoLogo",
+      "-NonInteractive",
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "./Certificate.ps1",
+      "-Operation",
+      "Get"
+    ],
+    "input": "stdin"
+  },
+  "set": {
+    "executable": "pwsh",
+    "args": [
+      "-NoLogo",
+      "-NonInteractive",
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "./Certificate.ps1",
+      "-Operation",
+      "Set"
+    ],
+    "input": "stdin",
+    "return": "state"
+  },
+  "test": {
+    "executable": "pwsh",
+    "args": [
+      "-NoLogo",
+      "-NonInteractive",
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "./Certificate.ps1",
+      "-Operation",
+      "Test"
+    ],
+    "input": "stdin",
+    "return": "state"
+  },
+  "schema": {
+    "embedded": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "Certificate",
+      "type": "object",
+      "required": ["Path"],
+      "properties": {
+        "Path": {
+          "type": "string",
+          "description": "Path to the certificate file"
+        },
+        "Thumbprint": {
+          "type": "string",
+          "description": "Certificate thumbprint (read-only)"
+        },
+        "Location": {
+          "type": "string",
+          "enum": ["LocalMachine", "CurrentUser"],
+          "default": "LocalMachine",
+          "description": "Certificate store location"
+        },
+        "StoreName": {
+          "type": "string",
+          "default": "Root",
+          "description": "Certificate store name"
+        },
+        "Ensure": {
+          "type": "string",
+          "enum": ["Present", "Absent"],
+          "default": "Present",
+          "description": "Desired state of the certificate"
+        }
+      }
+    }
+  }
+}

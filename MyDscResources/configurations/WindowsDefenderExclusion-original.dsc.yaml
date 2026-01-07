@@ -1,0 +1,17 @@
+$schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/2024/04/config/document.json
+resources:
+  - name: MyWindowsDefenderExclusion - C:\Projets
+    type: MyWindowsDefenderExclusion/WindowsDefenderExclusion
+    properties:
+      Value: C:\Projets
+      Type: Path
+  - name: MyWindowsDefenderExclusion - C:\Users\%user%\.dotnet\tools
+    type: MyWindowsDefenderExclusion/WindowsDefenderExclusion
+    properties:
+      Value: C:\Users\%user%\.dotnet\tools
+      Type: Path
+  - name: MyWindowsDefenderExclusion - C:\Users\%user%\scoop
+    type: MyWindowsDefenderExclusion/WindowsDefenderExclusion
+    properties:
+      Value: C:\Users\%user%\scoop
+      Type: Path

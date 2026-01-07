@@ -1,0 +1,113 @@
+$schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/2024/04/config/document.json
+resources:
+  - name: Scoop Package - temurin-lts-jdk
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: temurin-lts-jdk
+      ensure: Present
+      version: latest
+
+  - name: Scoop Package - gh
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: gh
+      ensure: Present
+      version: latest
+
+  - name: Scoop Package - git
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: git
+      ensure: Present
+      version: latest
+
+  - name: Scoop Package - nuget
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: nuget
+      ensure: Present
+      version: latest
+
+  - name: Scoop Package - nvm
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: nvm
+      ensure: Present
+      version: latest
+
+  - name: Scoop Package - oh-my-posh
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: oh-my-posh
+      ensure: Present
+      version: latest
+
+  - name: Scoop Package - terraform
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: terraform
+      ensure: Present
+      version: latest
+
+  - name: Scoop Package - CascadiaCode-NF-Mono
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: CascadiaCode-NF-Mono
+      ensure: Present
+      version: latest
+
+  - name: Scoop Package - FiraCode-NF
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: FiraCode-NF
+      ensure: Present
+      version: latest
+
+  - name: Scoop Package - baretail
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: baretail
+      ensure: Present
+      version: latest
+
+  - name: Scoop Package - mockoon
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: mockoon
+      ensure: Present
+      version: latest
+
+  - name: Scoop Package - nuget-package-explorer
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: nuget-package-explorer
+      ensure: Present
+      version: latest
+
+  - name: Scoop Package - paint.net
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: paint.net
+      ensure: Present
+      version: latest
+
+  - name: Scoop Package - postman
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: postman
+      ensure: Present
+      version: latest
+
+  - name: Scoop Package - vlc
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: vlc
+      ensure: Present
+      version: latest
+
+  - name: Scoop Package - wiztree
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: wiztree
+      ensure: Present
+      version: latest

@@ -34,6 +34,7 @@ class MyScoop
 
     [bool] Test()
     {
+        
         $current = $this.Get()
         return ($current.Ensure -eq $this.Ensure)
     }

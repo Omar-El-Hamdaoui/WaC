@@ -1,0 +1,5 @@
+$schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/v3/bundled/config/document.json
+resources:
+- name: MyChocolatey
+  type: MyChocolatey/MyChocolatey
+  properties: {}

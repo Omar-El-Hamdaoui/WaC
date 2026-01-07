@@ -1,0 +1,37 @@
+$schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/v3/config/document.json
+metadata:
+  name: SampleConfiguration
+  description: Demonstrates DSC v3 command-based resources
+
+parameters:
+  AppName:
+    type: string
+    defaultValue: MyApplication
+  InstallPath:
+    type: string
+    defaultValue: C:\Program Files\MyApplication
+
+variables:
+  configPath: C:\ProgramData\MyApplication
+
+resources:
+  - name: Application Config File
+    type: MyCompany.Storage/FileManager
+    properties:
+      path: "[concat(variables('configPath'), '\\config.json')]"
+      content: "[concat('{\"application\": \"', parameters('AppName'), '\", \"installPath\": \"', parameters('InstallPath'), '\", \"version\": \"1.0.0\"}')]"
+      ensure: Present
+
+  - name: Application Log File
+    type: MyCompany.Storage/FileManager
+    properties:
+      path: "[concat(variables('configPath'), '\\app.log')]"
+      content: Application log initialized
+      ensure: Present
+
+  - name: Application Settings
+    type: MyCompany.Storage/FileManager
+    properties:
+      path: "[concat(parameters('InstallPath'), '\\settings.ini')]"
+      content: "[concat('[General]\nAppName=', parameters('AppName'), '\nVersion=1.0.0\nDebug=false')]"
+      ensure: Present
