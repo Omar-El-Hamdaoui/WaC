@@ -24,13 +24,13 @@ $inputObject = if ($inputJson) {
 #region Helper Functions
 
 function Test-ScoopInstalled {
-    try {
-        $scoopCommand = Get-Command scoop -ErrorAction SilentlyContinue
-        return $null -ne $scoopCommand
+    $scoopPath = Get-ScoopPath  
+    if (-not $scoopPath) {      
+        return $false            
     }
-    catch {
-        return $false
-    }
+
+    $scoopExe = Join-Path $scoopPath "shims\scoop.ps1"
+    return (Test-Path $scoopExe)
 }
 
 function Get-ScoopVersion {
@@ -69,6 +69,8 @@ function Get-ScoopPath {
 }
 
 #endregion
+
+
 
 #region DSC Operations
 
@@ -236,7 +238,9 @@ function Set-ResourceState {
 try {
     $result = switch ($Operation) {
         'Get'  { Get-ResourceState -InputObject $inputObject }
-        'Test' { Test-ResourceState -InputObject $inputObject }
+        # Changement temporaire il faut  décommenter cette ligne plus tard
+        #'Test' { Test-ResourceState -InputObject $inputObject } 
+        'Test' { Test-ScoopInstalled -InputObject $inputObject }
         'Set'  { Set-ResourceState -InputObject $inputObject }
     }
     
