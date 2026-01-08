@@ -12,7 +12,7 @@
 RootModule = 'MyDscResources.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.5.49'
+ModuleVersion = '1.5.51'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
