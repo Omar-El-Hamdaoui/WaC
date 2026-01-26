@@ -12,58 +12,6 @@ param(
 
 Write-Host "=== INSTALLATION DE MyDscResources ===" -ForegroundColor Cyan
 
-# # ====================================
-# # ÉTAPE 0A : VÉRIFICATION ET INSTALLATION DE SCOOP
-# # ====================================
-# Write-Host "`n0a. Vérification de Scoop..." -ForegroundColor Yellow
-
-# function Test-ScoopInstalled {
-#     try {
-#         $scoopCommand = Get-Command scoop -ErrorAction SilentlyContinue
-#         return $null -ne $scoopCommand
-#     }
-#     catch {
-#         return $false
-#     }
-# }
-
-# function Install-ScoopIfMissing {
-#     if (Test-ScoopInstalled) {
-#         Write-Host "  ✓ Scoop est déjà installé" -ForegroundColor Green
-#         try {
-#             $version = & scoop --version 2>$null
-#             Write-Host "    Version: $version" -ForegroundColor Gray
-#         }
-#         catch {
-#             Write-Host "    (version non disponible)" -ForegroundColor Gray
-#         }
-#         return $true
-#     }
-    
-#     Write-Host "  ⚠ Scoop n'est pas installé, installation en cours..." -ForegroundColor Yellow
-    
-#     try {
-#         # ⭐ FORCER TLS 1.2 POUR LA CONNEXION SSL ⭐
-#         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        
-#         # Configuration de la politique d'exécution
-#         Write-Host "    Configuration de la politique d'exécution..." -ForegroundColor Gray
-#         Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force -ErrorAction SilentlyContinue
-        
-#         # Télécharger et exécuter le script d'installation
-#         Write-Host "    Téléchargement du script d'installation Scoop..." -ForegroundColor Gray
-#         $installScript = Invoke-RestMethod -Uri 'https://get.scoop.sh' -UseBasicParsing -ErrorAction Stop
-        
-#         Write-Host "    Exécution de l'installation..." -ForegroundColor Gray
-#         Invoke-Expression $installScript 
-        
-#     }
-#     catch {
-#     }
-# }
-
-# # Exécuter la vérification/installation de Scoop
-# Install-ScoopIfMissing
 
 # ====================================
 # ÉTAPE 0B : CONFIGURATION DU PSMODULEPATH UTILISATEUR
