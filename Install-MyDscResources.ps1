@@ -14,34 +14,35 @@ Write-Host "=== INSTALLATION DE MyDscResources ===" -ForegroundColor Cyan
 
 
 # ====================================
-# ÉTAPE 0B : CONFIGURATION DU PSMODULEPATH UTILISATEUR
-# But : S'assurer que les modules installés par l'utilisateur sont trouvés.
+# ÉTAPE 0 : PRÉ-REQUIS
 # ====================================
-Write-Host "`n0b. Vérification et configuration du PSModulePath..." -ForegroundColor Yellow
-
-$userModulePath = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "PowerShell\Modules"
-$currentPSModulePath = $env:PSModulePath -split [IO.Path]::PathSeparator
-
-if (-not ($currentPSModulePath -contains $userModulePath)) {
-    Write-Host "  Chemin utilisateur manquant. Ajout de '$userModulePath'..." -ForegroundColor Gray
     
-    # 1. Mise à jour persistante (Variable Utilisateur)
-    $existingUserPath = [Environment]::GetEnvironmentVariable("PSModulePath", "User")
-    if ($existingUserPath -notlike "*$userModulePath*") {
-        # Ajoute le nouveau chemin en premier pour qu'il soit prioritaire
-        $newPath = "$userModulePath" + [IO.Path]::PathSeparator + $existingUserPath
-        [Environment]::SetEnvironmentVariable("PSModulePath", $newPath, "User")
-        Write-Host "  ✓ PSModulePath utilisateur persistante mis à jour." -ForegroundColor Green
-    }
+Write-Host "`n0. Pré-requis (Auto-Install)..." -ForegroundColor Yellow
 
-    # 2. Mise à jour pour la session actuelle (immédiat)
-    $env:PSModulePath = "$userModulePath" + [IO.Path]::PathSeparator + $env:PSModulePath
-    Write-Host "  ✓ PSModulePath de session mis à jour." -ForegroundColor Green
-} else {
-    Write-Host "  ✓ PSModulePath utilisateur déjà présent." -ForegroundColor Green
+# 1. Vérif Winget (Obligatoire)
+if (-not (Get-Command winget -EA SilentlyContinue)) { Write-Host " ✗ Winget manquant !" -F Red; exit 1 }
+
+# 2. PowerShell 7 (Si absent, on installe en silence)
+if (-not (Get-Command pwsh -EA SilentlyContinue)) { 
+    Write-Host "   Installation PowerShell 7..." -ForegroundColor Cyan
+    winget install --id Microsoft.PowerShell --source winget --accept-package-agreements --accept-source-agreements --silent
+    Write-Host "   ⚠ Relancez le script après l'installation !" -ForegroundColor Yellow
 }
 
+$pkgInfo = (winget search DesiredStateConfiguration --source msstore --exact --accept-source-agreements |
+        Where-Object { $_ -match '^DesiredStateConfiguration\s' } |
+        Select-Object -First 1).ToString().Split(' ', [System.StringSplitOptions]::RemoveEmptyEntries)[1]
 
+
+# 3. DSC v3 (Si absent, on installe en silence)
+if (-not (Get-Command dsc -EA SilentlyContinue)) {
+    Write-Host "   Installation DSC v3..." -ForegroundColor Cyan
+    winget install --id $pkgInfo --source msstore --accept-package-agreements --accept-source-agreements --silent
+}
+
+Write-Host "   ✓ Pré-requis validés." -ForegroundColor Green
+
+Write-Host "=== INSTALLATION DE MyDscResources ===" -ForegroundColor Cyan
 # ====================================
 # ÉTAPE 1 : ENREGISTREMENT DU REPOSITORY
 # ====================================
@@ -84,10 +85,12 @@ catch {
 
 # Vérifier l'installation de MyDscResources
 $installedModule = Get-Module -Name MyDscResources -ListAvailable | Select-Object -First 1
+
 if (-not $installedModule) {
     Write-Host "  ✗ Erreur : Module MyDscResources non trouvé après installation" -ForegroundColor Red
     exit 1
 }
+
 Write-Host "  Module installé :" -ForegroundColor Gray
 Write-Host "    Version : $($installedModule.Version)" -ForegroundColor Gray
 Write-Host "    Chemin  : $($installedModule.ModuleBase)" -ForegroundColor Gray
@@ -98,92 +101,42 @@ Write-Host "    Chemin  : $($installedModule.ModuleBase)" -ForegroundColor Gray
 # ====================================
 Write-Host "`n3. Configuration de DSC..." -ForegroundColor Yellow
 
-$modulePath = $installedModule.ModuleBase
 
-# Détecter le bon dossier (resources ou dsc_resources)
-$resourceFolder = $null
-foreach ($folder in @("resources", "dsc_resources")) {
-    $testPath = Join-Path $modulePath $folder
-    if (Test-Path $testPath) {
-        $resourceFolder = $folder
-        break
-    }
-}
+$dscResourcePath = Join-Path $installedModule.ModuleBase "resources"
 
-if (-not $resourceFolder) {
-    Write-Host "  ✗ Aucun dossier de ressources trouvé (resources ou dsc_resources)" -ForegroundColor Red
-    exit 1
-}
 
-$dscResourcePath = Join-Path $modulePath $resourceFolder
-Write-Host "  Dossier des ressources : $dscResourcePath" -ForegroundColor Gray
+Write-Host " Dossier des ressources identifié : $dscResourcePath" -ForegroundColor Gray
 
-# Lister les ressources disponibles
 $resourceDirs = Get-ChildItem $dscResourcePath -Directory
-Write-Host "  Ressources disponibles :" -ForegroundColor Gray
-$resourceDirs | ForEach-Object { Write-Host "    - $($_.Name)" -ForegroundColor Cyan }
 
 # ====================================
 # ÉTAPE 4 : CONFIGURATION DSC_RESOURCE_PATH
 # ====================================
 Write-Host "`n4. Configuration de DSC_RESOURCE_PATH..." -ForegroundColor Yellow
 
-# IMPORTANT : Construire le chemin pour chaque ressource individuellement
-$resourcePaths = $resourceDirs | ForEach-Object { $_.FullName }
+# 1. On construit une seule liste avec TOUS les chemins nécessaires
+$pathList = @(
+    $resourceDirs.FullName                                  # Tes ressources
+    $PSHOME                                                 # PowerShell 7 
+    [Environment]::SystemDirectory                          # System32 
+    (Get-Module Microsoft.WinGet.DSC -ListAvailable).ModuleBase # WinGet 
+) | Where-Object { $_ } | Select-Object -Unique
 
-# Ajouter les chemins système et autres dépendances
-$pwshPath = "C:\Program Files\PowerShell\7"
-$userModulesPath = "C:\Windows\System32"
-$allPaths = $resourcePaths + $pwshPath + $userModulesPath
+# 2. On joint tout avec le séparateur (;)
+$finalPath = $pathList -join [IO.Path]::PathSeparator
 
+# 3. On applique la configuration (Persistant + Session)
+[Environment]::SetEnvironmentVariable("DSC_RESOURCE_PATH", $finalPath, "User")
+$env:DSC_RESOURCE_PATH = $finalPath
 
-####
-try {
-    # Tenter de localiser le répertoire WinGet DSC (utilisé pour les dépendances)
-    $winGetModulePath = (Get-Module -ListAvailable -Name Microsoft.WinGet.DSC).Path
-    
-    if ($winGetModulePath) {
-        $winGetDir = Split-Path $winGetModulePath -Parent
-        $allPaths = $allPaths + $winGetDir
-        Write-Host "  Chemin spécifique WinGet DSC ajouté: $winGetDir" -ForegroundColor Gray
-    } else {
-        Write-Warning "  Le module Microsoft.WinGet.DSC n'a pas pu être localisé."
-    }
-}
-catch {
-    Write-Warning "  Erreur lors de la détermination du chemin de Microsoft.WinGet.DSC : $($_.Exception.Message)"
-}
-####
-
-$newDscResourcePath = $allPaths -join [IO.Path]::PathSeparator
-
-Write-Host "  Configuration du chemin avec $($resourceDirs.Count + 2) ressource(s)..." -ForegroundColor Gray
-
-# Mettre à jour la variable utilisateur (persistante)
-[Environment]::SetEnvironmentVariable("DSC_RESOURCE_PATH", $newDscResourcePath, "User")
-Write-Host "  ✓ Variable utilisateur mise à jour" -ForegroundColor Green
-
-# Mettre à jour la session actuelle (immédiat)
-$env:DSC_RESOURCE_PATH = $newDscResourcePath
-Write-Host "  ✓ Variable de session mise à jour" -ForegroundColor Green
-
-# Afficher la configuration
-Write-Host "`n  Chemins configurés :" -ForegroundColor Gray
-$env:DSC_RESOURCE_PATH -split [IO.Path]::PathSeparator | ForEach-Object {
-    $resourceName = Split-Path $_ -Leaf
-    Write-Host "    📦 $resourceName" -ForegroundColor Cyan
-}
+Write-Host " ✓ Variable DSC_RESOURCE_PATH mise à jour." -ForegroundColor Green
+Write-Host "   Chemin : $finalPath" -ForegroundColor DarkGray
 
 
 # ====================================
 # ÉTAPE 5 : VÉRIFICATION
 # ====================================
 Write-Host "`n5. Vérification..." -ForegroundColor Yellow
-
-# AJOUT DE L'ANCIEN MODULE POUR LA COMPATIBILITÉ 'DSC'
-Import-Module PSDesiredStateConfiguration -ErrorAction SilentlyContinue
-
-Start-Sleep -Seconds 1 # Laisser le temps à l'environnement de se mettre à jour
 
 try {
     # 1. Tenter de trouver la commande 'dsc'

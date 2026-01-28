@@ -1,184 +1,183 @@
 $schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/v3/bundled/config/document.json
 resources:
-- name: MyScoop
-  type: MyCompany.Installer/MyScoop
-  properties: 
-    name: Scoop
-    ensure: Present
-- name: Scoop Package - dotnet-sdk
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: dotnet-sdk
-    ensure: Present
-    version: latest
-- name: Scoop Package - dotnet3-sdk
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: dotnet3-sdk
-    ensure: Present
-    version: latest
-- name: Scoop Package - dotnet5-sdk
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: dotnet5-sdk
-    ensure: Present
-    version: latest
-- name: Scoop Package - dotnet6-sdk
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: dotnet6-sdk
-    ensure: Present
-    version: latest
-- name: Scoop Package - dotnet8-sdk
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: dotnet8-sdk
-    ensure: Present
-    version: latest
-- name: Scoop Package - temurin-lts-jdk
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: temurin-lts-jdk
-    ensure: Present
-    version: latest
-- name: Scoop Package - gh
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: gh
-    ensure: Present
-    version: latest
-- name: Scoop Package - git
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: git
-    ensure: Present
-    version: latest
-- name: Scoop Package - nuget
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: nuget
-    ensure: Present
-    version: latest
-- name: Scoop Package - nvm
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: nvm
-    ensure: Present
-    version: latest
-- name: Scoop Package - oh-my-posh
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: oh-my-posh
-    ensure: Present
-    version: latest
-- name: Scoop Package - terraform
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: terraform
-    ensure: Present
-    version: latest
-- name: Scoop Package - CascadiaCode-NF-Mono
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: CascadiaCode-NF-Mono
-    ensure: Present
-    version: latest
-- name: Scoop Package - FiraCode-NF
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: FiraCode-NF
-    ensure: Present
-    version: latest
-- name: Scoop Package - baretail
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: baretail
-    ensure: Present
-    version: latest
-- name: Scoop Package - mockoon
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: mockoon
-    ensure: Present
-    version: latest
-- name: Scoop Package - nuget-package-explorer
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: nuget-package-explorer
-    ensure: Present
-    version: latest
-- name: Scoop Package - paint.net
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: paint.net
-    ensure: Present
-    version: latest
-- name: Scoop Package - postman
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: postman
-    ensure: Present
-    version: latest
-- name: Scoop Package - vlc
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: vlc
-    ensure: Present
-    version: latest
-- name: Scoop Package - wiztree
-  type: MyCompany.Packages/ScoopPackage
-  properties:
-    packageName: wiztree
-    ensure: Present
-    version: latest
+  - name: MyScoop
+    type: MyCompany.Installer/MyScoop
+    properties:
+      name: Scoop
+      ensure: Present
+  - name: Scoop Package - dotnet-sdk
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: dotnet-sdk
+      ensure: Present
+      version: latest
+  - name: Scoop Package - dotnet3-sdk
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: dotnet3-sdk
+      ensure: Present
+      version: latest
+  - name: Scoop Package - dotnet5-sdk
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: dotnet5-sdk
+      ensure: Present
+      version: latest
+  - name: Scoop Package - dotnet6-sdk
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: dotnet6-sdk
+      ensure: Present
+      version: latest
+  - name: Scoop Package - dotnet8-sdk
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: dotnet8-sdk
+      ensure: Present
+      version: latest
+  - name: Scoop Package - temurin-lts-jdk
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: temurin-lts-jdk
+      ensure: Present
+      version: latest
+  - name: Scoop Package - gh
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: gh
+      ensure: Present
+      version: latest
+  - name: Scoop Package - git
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: git
+      ensure: Present
+      version: latest
+  - name: Scoop Package - nuget
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: nuget
+      ensure: Present
+      version: latest
+  - name: Scoop Package - nvm
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: nvm
+      ensure: Present
+      version: latest
+  - name: Scoop Package - oh-my-posh
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: oh-my-posh
+      ensure: Present
+      version: latest
+  - name: Scoop Package - terraform
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: terraform
+      ensure: Present
+      version: latest
+  - name: Scoop Package - CascadiaCode-NF-Mono
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: CascadiaCode-NF-Mono
+      ensure: Present
+      version: latest
+  - name: Scoop Package - FiraCode-NF
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: FiraCode-NF
+      ensure: Present
+      version: latest
+  - name: Scoop Package - baretail
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: baretail
+      ensure: Present
+      version: latest
+  - name: Scoop Package - mockoon
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: mockoon
+      ensure: Present
+      version: latest
+  - name: Scoop Package - nuget-package-explorer
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: nuget-package-explorer
+      ensure: Present
+      version: latest
+  - name: Scoop Package - paint.net
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: paint.net
+      ensure: Present
+      version: latest
+  - name: Scoop Package - postman
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: postman
+      ensure: Present
+      version: latest
+  - name: Scoop Package - vlc
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: vlc
+      ensure: Present
+      version: latest
+  - name: Scoop Package - wiztree
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: wiztree
+      ensure: Present
+      version: latest
 
-#Node
+  #Node
 
-- name: MyNodeVersion - lts
-  type: MyCompany.NodeJs/NodeVersion
-  properties:
-    Ensure: Used
-    version: lts
-- name: MyNodeVersion - 18
-  type: MyCompany.NodeJs/NodeVersion
-  properties:
-    version: "18"
+  - name: MyNodeVersion - lts
+    type: MyCompany.NodeJs/NodeVersion
+    properties:
+      Ensure: Used
+      version: lts
+  - name: MyNodeVersion - 18
+    type: MyCompany.NodeJs/NodeVersion
+    properties:
+      version: "18"
 
+  #Chocolatey Part
+  - name: MyChocolatey
+    type: MyCompany.Installer/MyChocolatey
+    properties:
+      name: Chocolatey
+      ensure: Present
+  - name: MyChocolateyPackage - 7zip
+    type: MyCompany.Packages/ChocolateyPackage
+    properties:
+      packageName: 7zip
+      ensure: Present
+      version: latest
+  - name: MyChocolateyPackage - bulkrenameutility
+    type: MyCompany.Packages/ChocolateyPackage
+    properties:
+      packageName: bulkrenameutility
+      ensure: Present
+      version: latest
+  - name: MyChocolateyPackage - notepadplusplus
+    type: MyCompany.Packages/ChocolateyPackage
+    properties:
+      packageName: notepadplusplus
+      ensure: Present
+      version: latest
 
-#Chocolatey Part
-- name: MyChocolatey
-  type: MyCompany.Installer/MyChocolatey
-  properties: 
-    name: Chocolatey
-    ensure: Present
-- name: MyChocolateyPackage - 7zip
-  type: MyCompany.Packages/ChocolateyPackage
-  properties:
-    packageName: 7zip
-    ensure: Present
-    version: latest    
-- name: MyChocolateyPackage - bulkrenameutility
-  type: MyCompany.Packages/ChocolateyPackage
-  properties:
-    packageName: bulkrenameutility
-    ensure: Present
-    version: latest    
-- name: MyChocolateyPackage - notepadplusplus
-  type: MyCompany.Packages/ChocolateyPackage
-  properties:
-    packageName: notepadplusplus
-    ensure: Present
-    version: latest    
-
-- name: MyChocolateyPackage - webdeploy
-  type: MyCompany.Packages/ChocolateyPackage
-  properties:
-    packageName: webdeploy
-    ensure: Present
-    version: latest    
-- name: MyChocolateyPackage - winmerge
-  type: MyCompany.Packages/ChocolateyPackage
-  properties:
-    packageName: winmerge
-    ensure: Present
-    version: latest 
+  - name: MyChocolateyPackage - webdeploy
+    type: MyCompany.Packages/ChocolateyPackage
+    properties:
+      packageName: webdeploy
+      ensure: Present
+      version: latest
+  - name: MyChocolateyPackage - winmerge
+    type: MyCompany.Packages/ChocolateyPackage
+    properties:
+      packageName: winmerge
+      ensure: Present
+      version: latest

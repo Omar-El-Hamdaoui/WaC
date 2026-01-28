@@ -153,32 +153,7 @@ function Set-ResourceState {
 
     if ($currentState.ensure -ne $desiredEnsure) {
         if ($desiredEnsure -eq 'Present') {
-            
-            # 1. NETTOYAGE
-            if ($currentState._isBroken) {
-                Write-Trace "FIX: Uninstalling broken package '$pkgName'..."
-                try { Invoke-Scoop "uninstall" "$pkgName" } catch {}
-            }
-
-            # 2. CONFIGURATION PROXY (CORRECTION CRITIQUE)
-            try {
-                Invoke-Scoop "config" "aria2-enabled false"
-
-                $sysProxy = [System.Net.WebRequest]::GetSystemWebProxy()
-                $proxyUri = $sysProxy.GetProxy("http://google.com").AbsoluteUri
-                
-                if ($proxyUri -and $proxyUri -ne "http://google.com/") {
-                    # --- CORRECTION ICI : ON RETIRE LE PROTOCOLE ---
-                    # Transforme 'http://aix.proxy.corp.ssg:8080/' en 'aix.proxy.corp.ssg:8080'
-                    # Cela évite l'erreur "Hôte inconnu (http)"
-                    $cleanProxy = $proxyUri -replace "^https?://", "" -replace "/$", ""
-                    
-                    Write-Trace "CONFIG: Setting Scoop proxy to '$cleanProxy' (stripped)..."
-                    Invoke-Scoop "config" "proxy $cleanProxy"
-                }
-            } catch { Write-Trace "WARN: Config failed." }
-
-            # 3. INSTALLATION
+        
             Write-Trace "ACTION: Installing '$pkgName'..."
             
             if ($pkgName -ne '7zip') {

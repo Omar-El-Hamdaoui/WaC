@@ -1,20 +1,8 @@
 # Guide d'installation DSC - Configuration automatisée Windows
 
-##  Installation
+## Installation
 
-### 1. Installation de PowerShell 7
-
-```powershell
-winget install --id Microsoft.PowerShell --source winget
-```
-
-### 2. Installation de DSC v3
-
-```powershell
-winget install Microsoft.DSC
-```
-
-### 3. Récupération du code source
+### 1. Récupération du code source
 
 Clonez ou téléchargez le projet :
 
@@ -25,7 +13,7 @@ cd WaC
 
 ---
 
-##  Configuration des modules
+## Configuration des modules
 
 ### 4. Configuration de l'environnement PowerShell
 
@@ -61,7 +49,7 @@ Les modules peuvent être installés dans différents répertoires :
 
 ---
 
-##  Installation des ressources personnalisées
+## Installation des ressources personnalisées
 
 ### 6. Déploiement des ressources DSC custom
 
@@ -75,7 +63,7 @@ Unblock-File .\Install-MyDscResources.ps1
 
 ---
 
-##  Utilisation et tests
+## Utilisation et tests
 
 ### 7. Tester votre configuration DSC
 
@@ -89,6 +77,5 @@ dsc config test -f .\workstation-configTestSet.yaml
 # Appliquer la configuration
 dsc config set -f .\workstation-configTestSet.yaml
 ```
-
 
 **Projet source :** https://github.com/GuyLescalier/WaC

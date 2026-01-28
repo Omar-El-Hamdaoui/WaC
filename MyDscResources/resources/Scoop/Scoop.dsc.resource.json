@@ -3,38 +3,24 @@
   "type": "MyCompany.Installer/MyScoop",
   "version": "0.0.1",
   "description": "Installs or removes the Scoop package manager",
+  "exitCodes": {
+    "0": "Success",
+    "1": "This is my Exit Code"
+  },
   "get": {
     "executable": "pwsh",
-    "args": [
-      "-NoProfile",
-      "-NonInteractive",
-      "-File",
-      "./Scoop.ps1",
-      "Get"
-    ],
+    "args": ["-NoProfile", "-NonInteractive", "-File", "./Scoop.ps1", "Get"],
     "input": "stdin"
   },
   "set": {
     "executable": "pwsh",
-    "args": [
-      "-NoProfile",
-      "-NonInteractive",
-      "-File",
-      "./Scoop.ps1",
-      "Set"
-    ],
+    "args": ["-NoProfile", "-NonInteractive", "-File", "./Scoop.ps1", "Set"],
     "input": "stdin",
     "implementsPretest": true
   },
   "test": {
     "executable": "pwsh",
-    "args": [
-      "-NoProfile",
-      "-NonInteractive",
-      "-File",
-      "./Scoop.ps1",
-      "Test"
-    ],
+    "args": ["-NoProfile", "-NonInteractive", "-File", "./Scoop.ps1", "Test"],
     "input": "stdin"
   },
   "schema": {

@@ -10,26 +10,22 @@ $ProgressPreference = 'SilentlyContinue'
 
 # Lecture de l'entrée JSON depuis stdin
 $inputJson = [Console]::In.ReadToEnd()
-$inputObject = if ($inputJson) { 
+$inputObject = if ($inputJson) {
     try {
-        $inputJson | ConvertFrom-Json 
+        $inputJson | ConvertFrom-Json
     }
     catch {
         @{ name = 'Scoop'; ensure = 'Present' }
     }
-} else { 
-    @{ name = 'Scoop'; ensure = 'Present' } 
+} else {
+    @{ name = 'Scoop'; ensure = 'Present' }
 }
 
 #region Helper Functions
 
 function Test-ScoopInstalled {
-    $scoopPath = Get-ScoopPath  
-    if (-not $scoopPath) {      
-        return $false            
-    }
-
-    return $true
+    $scoopPath = Get-ScoopPath
+    return [bool]$scoopPath
 }
 
 function Get-ScoopVersion {
@@ -54,12 +50,12 @@ function Get-ScoopPath {
         if ($env:SCOOP) {
             return $env:SCOOP
         }
-        
+
         $defaultPath = Join-Path $env:USERPROFILE 'scoop'
         if (Test-Path $defaultPath) {
             return $defaultPath
         }
-        
+
         return $null
     }
     catch {
@@ -75,28 +71,28 @@ function Get-ScoopPath {
 
 function Get-ResourceState {
     param($InputObject)
-    
+
     try {
         $isInstalled = Test-ScoopInstalled
-        
+
         $state = @{
             name = if ($InputObject.name) { $InputObject.name } else { 'Scoop' }
             ensure = if ($isInstalled) { 'Present' } else { 'Absent' }
         }
-        
+
         # Ajouter des infos supplémentaires si installé
         if ($isInstalled) {
             $version = Get-ScoopVersion
             if ($version) {
                 $state.version = $version
             }
-            
+
             $installPath = Get-ScoopPath
             if ($installPath) {
                 $state.installPath = $installPath
             }
         }
-        
+
         return $state
     }
     catch {
@@ -111,13 +107,13 @@ function Get-ResourceState {
 
 function Test-ResourceState {
     param($InputObject)
-    
+
     try {
         $currentState = Get-ResourceState -InputObject $InputObject
         $desiredEnsure = if ($InputObject.ensure) { $InputObject.ensure } else { 'Present' }
-        
+
         $inDesiredState = ($currentState.ensure -eq $desiredEnsure)
-        
+
         $currentState._inDesiredState = $inDesiredState
         return $currentState
     }
@@ -132,27 +128,55 @@ function Test-ResourceState {
     }
 }
 
+# function Set-ResourceState {
+#     param($InputObject)
+
+    #   return @{
+    #         name = 'Scoop'
+    #         ensure = 'TITI'
+    #     }
+
+    # # Si déjà dans l'état désiré, ne rien faire
+    # $testResult = Test-ResourceState -InputObject $InputObject
+    # if ($testResult._inDesiredState) {
+    #     return Get-ResourceState -InputObject $InputObject
+    # }
+
+    # $desiredEnsure = if ($InputObject.ensure) { $InputObject.ensure } else { 'Present' }
+
+    # if ($desiredEnsure -eq 'Present') {
+    #     Invoke-Expression "& {$(Invoke-RestMethod get.scoop.sh)} -RunAsAdmin"
+    #     #Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+    #     #Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+       
+    #     $isScoopInstalled = Test-ScoopInstalled
+
+    #     if (-not $isScoopInstalled) {
+    #         throw "Failed to install Scoop."
+    #     }        
+
+    # }
+    # elseif ($desiredEnsure -eq 'Absent') {
+    #     scoop uninstall scoop --purge
+    #     # Remove-Item -Recurse -Force ~\scoop
+    # }
+
+    # return Get-ResourceState -InputObject $InputObject
+# }
+
 function Set-ResourceState {
     param($InputObject)
     
-    # Si déjà dans l'état désiré, ne rien faire
-    $testResult = Test-ResourceState -InputObject $InputObject
-    if ($testResult._inDesiredState) {
-        return Get-ResourceState -InputObject $InputObject
-    }
+    #Invoke-Expression "& {$(Invoke-RestMethod get.scoop.sh)} -RunAsAdmin"
     
-    $desiredEnsure = if ($InputObject.ensure) { $InputObject.ensure } else { 'Present' }
-    
-    if ($desiredEnsure -eq 'Present') {
-        Invoke-Expression "& {$(Invoke-RestMethod get.scoop.sh)} -RunAsAdmin"
-    }
-    elseif ($desiredEnsure -eq 'Absent') {
-        scoop uninstall scoop --purge
-        # Remove-Item -Recurse -Force ~\scoop
-    }
-    
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+    Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+
+
     return Get-ResourceState -InputObject $InputObject
 }
+
+
 
 #endregion
 
@@ -160,13 +184,13 @@ function Set-ResourceState {
 try {
     $result = switch ($Operation) {
         'Get'  { Get-ResourceState -InputObject $inputObject }
-        'Test' { Test-ResourceState -InputObject $inputObject } 
+        'Test' { Test-ResourceState -InputObject $inputObject }
         'Set'  { Set-ResourceState -InputObject $inputObject }
     }
-    
+
     $jsonOutput = $result | ConvertTo-Json -Compress -Depth 10
     Write-Output $jsonOutput
-    
+
     exit 0
 }
 catch {
@@ -176,9 +200,9 @@ catch {
         error = $_.Exception.Message
         _inDesiredState = $false
     }
-    
+
     $jsonOutput = $errorOutput | ConvertTo-Json -Compress -Depth 10
     Write-Output $jsonOutput
-    
+
     exit 0
 }
