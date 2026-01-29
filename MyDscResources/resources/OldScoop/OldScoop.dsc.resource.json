@@ -1,0 +1,46 @@
+{
+  "$schema": "https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/v3/resource/manifest.json",
+  "type": "MyCompany.Installer/MyScoop",
+  "version": "0.0.1",
+  "description": "Installs or removes the Scoop package manager",
+  "exitCodes": {
+    "0": "Success",
+    "1": "This is my Exit Code"
+  },
+  "get": {
+    "executable": "pwsh",
+    "args": ["-NoProfile", "-NonInteractive", "-File", "./Scoop.ps1", "Get"],
+    "input": "stdin"
+  },
+  "set": {
+    "executable": "pwsh",
+    "args": ["-NoProfile", "-NonInteractive", "-File", "./Scoop.ps1", "Set"],
+    "input": "stdin",
+    "implementsPretest": true
+  },
+  "test": {
+    "executable": "pwsh",
+    "args": ["-NoProfile", "-NonInteractive", "-File", "./Scoop.ps1", "Test"],
+    "input": "stdin"
+  },
+  "schema": {
+    "embedded": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Resource identifier",
+          "default": "Scoop"
+        },
+        "ensure": {
+          "type": "string",
+          "enum": ["Present", "Absent"],
+          "description": "Whether Scoop should be installed or removed",
+          "default": "Present"
+        }
+      }
+    }
+  }
+}
