@@ -50,7 +50,7 @@ function Get-ResourceState {
         $isInstalled = Test-ScoopInstalled
 
         $state = @{
-            name = if ($InputObject.name) { $InputObject.name } else { 'Scoop' }
+            name   = if ($InputObject.name) { $InputObject.name } else { 'Scoop' }
             ensure = if ($isInstalled) { 'Present' } else { 'Absent' }
         }
 
@@ -71,9 +71,9 @@ function Get-ResourceState {
     catch {
         # En cas d'erreur, retourner un état minimal valide
         return @{
-            name = if ($InputObject.name) { $InputObject.name } else { 'Scoop' }
+            name   = if ($InputObject.name) { $InputObject.name } else { 'Scoop' }
             ensure = 'Absent'
-            error = $_.Exception.Message
+            error  = $_.Exception.Message
         }
     }
 }
@@ -93,22 +93,57 @@ function Test-ResourceState {
     catch {
         # Retourner un état avec erreur mais JSON valide
         return @{
-            name = if ($InputObject.name) { $InputObject.name } else { 'Scoop' }
-            ensure = 'Absent'
+            name            = if ($InputObject.name) { $InputObject.name } else { 'Scoop' }
+            ensure          = 'Absent'
             _inDesiredState = $false
-            error = $_.Exception.Message
+            error           = $_.Exception.Message
         }
     }
 }
 
 function Set-ResourceState {
     param($InputObject)
-    
-    # A remettre cette ligne plus tard
-    # Invoke-Expression "& {$(Invoke-RestMethod get.scoop.sh)} -RunAsAdmin"
 
-    $scoopScript = Invoke-RestMethod get.scoop.sh
-    Invoke-Expression "& {$scoopScript} -RunAsAdmin"
+
+    if(! (Test-ScoopInstalled)){
+
+        $installerPath = Join-Path $env:TEMP "scoop-install-$(New-Guid).ps1"
+
+        Invoke-RestMethod -Uri 'https://get.scoop.sh' -OutFile $installerPath
+
+        & $installerPath 2>&1 
+    }
+
+    else {
+
+        #scoop uninstall scoop --purge
+        Remove-Item -Recurse -Force ~\scoop
+
+    }    
 }
 
+try {
+    $result = switch ($Operation) {
+        'Get' { Get-ResourceState -InputObject $inputObject }
+        'Test' { Test-ResourceState -InputObject $inputObject }
+        'Set' { Set-ResourceState -InputObject $inputObject }
+    }
 
+    $jsonOutput = $result | ConvertTo-Json -Compress -Depth 10
+    Write-Output $jsonOutput
+
+    exit 0
+}
+catch {
+    $errorOutput = @{
+        name            = if ($inputObject.name) { $inputObject.name } else { 'Scoop' }
+        ensure          = 'Absent'
+        error           = $_.Exception.Message
+        _inDesiredState = $false
+    }
+
+    $jsonOutput = $errorOutput | ConvertTo-Json -Compress -Depth 10
+    Write-Output $jsonOutput
+
+    exit 0
+}
