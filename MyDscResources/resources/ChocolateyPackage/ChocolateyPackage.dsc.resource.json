@@ -23,7 +23,8 @@
       "./ChocolateyPackage.ps1",
       "Set"
     ],
-    "input": "stdin"
+    "input": "stdin",
+    "implementsPretest": false
   },
   "test": {
     "executable": "pwsh",

@@ -1,18 +1,9 @@
-# ChocolateyPackage.ps1
-# DSC v3 Resource for managing Chocolatey packages
-# VERSION: Corrigé pour Stale/Latest et Diagnostic d'Erreur 1603
-
 param(
     [Parameter(Position = 0)]
     [ValidateSet('Get', 'Set', 'Test')]
     [string]$Operation = 'Get'
 )
 
-$ErrorActionPreference = 'Stop'
-$ProgressPreference = 'SilentlyContinue'
-$WarningPreference = 'SilentlyContinue'
-$VerbosePreference = 'SilentlyContinue'
-$InformationPreference = 'SilentlyContinue'
 
 # Read input from stdin
 $inputJson = [Console]::In.ReadToEnd()
@@ -304,24 +295,15 @@ function Set-ResourceState {
                 }
             }
         }
-        elseif ($desiredEnsure -eq 'Absent') {
-            if ($currentState.ensure -eq 'Present') {
-                $action = 'uninstall'
-                $argsList = @($InputObject.packageName) + $chocoArgs
-                $commandOutput = & $script:ChocoExe $action $argsList *>&1 | Out-String
-                
-                if ($LASTEXITCODE -ne 0) {
-                    throw "Uninstallation failed (Exit code $LASTEXITCODE). Output: `n$commandOutput"
-                }
-            }
+        else  {
+            & $env:ProgramData\chocolatey\choco.exe uninstall $InputObject.packageName  $chocoArgs
+
         }
         
         # Invalidate caches pour lire le nouvel état
         $script:PackageListCache = $null
         $script:OutdatedCache = $null
-        
-        # Return new state
-        return Get-ResourceState -InputObject $InputObject
+
     }
     catch {
         $errorState = Get-ResourceState -InputObject $InputObject
