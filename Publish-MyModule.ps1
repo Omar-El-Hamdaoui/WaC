@@ -108,16 +108,20 @@ if ($VersionBump) {
 }
 
 # ====================================
-# SUPPRIMER ÉVENTUELLE VERSION EXISTANTE
+# Delete possible existant versions
 # ====================================
-$existingPackage = Join-Path $RepositoryPath "MyDscResources.$versionToPublish.nupkg"
+$packagePattern = Join-Path $RepositoryPath "MyDscResources.*.nupkg"
 
-if (Test-Path $existingPackage) {
-    Write-Host "⚠ Une version identique existe déjà. Suppression et écrasement..." -ForegroundColor Yellow
-    Remove-Item $existingPackage -Force
-    Write-Host "✓ Ancien package supprimé" -ForegroundColor Green
+$oldPackages = Get-ChildItem $packagePattern
+
+if ($oldPackages) {
+    Write-Host "⚠ $($oldPackages.Count) old version(s) found. deleting ..." -ForegroundColor Yellow
+
+    $oldPackages | Remove-Item -Force
+    
+    Write-Host "✓ All older packages are deleted" -ForegroundColor Green
 } else {
-    Write-Host "✓ Aucun package existant à supprimer." -ForegroundColor Gray
+    Write-Host "✓ No packages were deleted." -ForegroundColor Gray
 }
 
 # ====================================

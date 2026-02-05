@@ -13,8 +13,29 @@ param(
 Write-Host "=== INSTALLATION DE MyDscResources ===" -ForegroundColor Cyan
 
 
+
 # ====================================
-# ÉTAPE 0 : PRÉ-REQUIS
+# ÉTAPE 0A : PRÉ-REQUIS
+# ====================================
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Bypass
+Set-PSRepository PSGallery -InstallationPolicy Trusted
+
+
+$targetPath = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "PowerShell\Modules"
+
+if (-not (Test-Path $targetPath)) {
+    New-Item -Path $targetPath -ItemType Directory -Force | Out-Null
+}
+
+Install-Module powershell-yaml
+Install-Module PSDscResources -Repository PSGallery
+Install-Module PSDesiredStateConfiguration -Repository PSGallery
+Install-Module Microsoft.WinGet.DSC -AllowPrerelease
+Install-Module Microsoft.VisualStudio.DSC
+
+
+# ====================================
+# ÉTAPE 0B : PRÉ-REQUIS
 # ====================================
     
 Write-Host "`n0. Pré-requis (Auto-Install)..." -ForegroundColor Yellow
@@ -60,8 +81,27 @@ if (-not $existingRepo) {
 }
 
 # ====================================
+# Delete Old versions
+# ====================================
+Write-Host "   Vérification des anciennes versions..." -ForegroundColor Gray
+
+$oldVersions = Get-Module -Name MyDscResources -ListAvailable
+
+if ($oldVersions) {
+    foreach ($ver in $oldVersions) {
+        Write-Host "   Suppression de la version existante : $($ver.Version) située dans $($ver.ModuleBase)" -ForegroundColor Magenta
+
+        Remove-Item -Path $ver.ModuleBase -Recurse -Force -ErrorAction Stop
+        Write-Host "   ✓ Version $($ver.Version) supprimée." -ForegroundColor Green
+    }
+}
+
+
+
+# ====================================
 # ÉTAPE 2 : INSTALLATION DU MODULE MyDscResources
 # ====================================
+
 Write-Host "`n2. Installation du module MyDscResources..." -ForegroundColor Yellow
 
 try {
@@ -137,6 +177,8 @@ Write-Host "   Chemin : $finalPath" -ForegroundColor DarkGray
 # ÉTAPE 5 : VÉRIFICATION
 # ====================================
 Write-Host "`n5. Vérification..." -ForegroundColor Yellow
+Write-Host "DSC resources :" -ForegroundColor Gray
+dsc resource list
 
 try {
     # 1. Tenter de trouver la commande 'dsc'
