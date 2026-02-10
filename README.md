@@ -74,7 +74,7 @@ Set-PSRepository PSGallery -InstallationPolicy Trusted
 Install-Module powershell-yaml
 Install-Module PSDscResources -Repository PSGallery
 Install-Module PSDesiredStateConfiguration -Repository PSGallery
-Install-Module Microsoft.WinGet.DSC -AllowPrerelease
+Install-Module Microsoft.WinGet.DSC -AllowPrereleaseC:\Users\oelhamdaoui\OneDrive - Sopra Steria\Documents\PowerShell\Modules
 Install-Module Microsoft.VisualStudio.DSC
 
 Déposer les modules dans [Environment]::GetFolderPath("MyDocuments") -> \PowerShell\Modules

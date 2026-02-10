@@ -15,38 +15,6 @@ cd WaC
 
 ## Configuration des modules
 
-### 4. Configuration de l'environnement PowerShell
-
-```powershell
-# Autoriser l'exécution de scripts
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Bypass
-
-# Configurer PSGallery comme source fiable
-Set-PSRepository PSGallery -InstallationPolicy Trusted
-
-# Installer les modules requis
-Install-Module powershell-yaml
-Install-Module PSDscResources -Repository PSGallery
-Install-Module PSDesiredStateConfiguration -Repository PSGallery
-Install-Module Microsoft.WinGet.DSC
-Install-Module Microsoft.VisualStudio.DSC
-```
-
-### 5. Emplacement des modules
-
-Les modules peuvent être installés dans différents répertoires :
-
-- `C:\Program Files\WindowsPowerShell\Modules\` (installation système)
-- `C:\Users\<VotreNom>\Documents\WindowsPowerShell\Modules\` (installation utilisateur)
-- `C:\Windows\System32\WindowsPowerShell\v1.0\Modules` (modules système comme PSDesiredStateConfiguration)
-
-**Important :** Les modules doivent être déplacés vers le dossier PowerShell 7 :
-
-```powershell
-# Copiez manuellement les modules dans ce répertoire si nécessaire
-[Environment]::GetFolderPath("MyDocuments") -> \PowerShell\Modules
-```
-
 ---
 
 ## Installation des ressources personnalisées
@@ -57,7 +25,7 @@ Les modules peuvent être installés dans différents répertoires :
 # Débloquer le script d'installation
 Unblock-File .\Install-MyDscResources.ps1
 
-# Exécuter l'installation (en mode utilisateur)
+# Exécuter l'installation
 .\Install-MyDscResources.ps1
 ```
 

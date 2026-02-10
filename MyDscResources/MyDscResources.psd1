@@ -12,10 +12,10 @@
 RootModule = 'MyDscResources.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.5.88'
+ModuleVersion = '0.0.1'
 
 # Supported PSEditions
-# CompatiblePSEditions = @()
+# CompatiblePSEditionsf = @()
 
 # ID used to uniquely identify this module
 GUID = 'c19a7052-5b91-44fb-a2a6-4045c7310fad'
@@ -107,7 +107,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        # ReleaseNotes = 'Patch certificate'
+        ReleaseNotes = ''
 
         # Prerelease string of this module
         # Prerelease = ''

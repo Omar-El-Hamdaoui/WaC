@@ -1,0 +1,19 @@
+$schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/v3/bundled/config/document.json
+resources:
+  # - name: MyChocolatey
+  #   type: MyCompany.Installer/MyChocolatey
+  #   properties:
+  #     name: Chocolatey
+  #     ensure: Present
+  - name: MyChocolateyPackage - asn1editor
+    type: MyCompany.Packages/ChocolateyPackage
+    properties:
+      packageName: asn1editor
+      ensure: Present
+      version: latest
+  # - name: MyChocolateyPackage - 7zip
+  #   type: MyCompany.Packages/ChocolateyPackage
+  #   properties:
+  #     packageName: 7zip
+  #     ensure: Absent
+  #     version: latest

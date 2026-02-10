@@ -116,11 +116,11 @@ function Get-PackageInfo {
     
     if (-not (Test-ChocolateyAvailable)) {
         return @{
-            packageName      = $PackageName
-            ensure           = 'Absent'
+            packageName      = $PackageName
+            ensure           = 'Absent'
             installedVersion = $null
-            latestVersion    = $null
-            state            = 'ChocolateyNotInstalled'
+            latestVersion    = $null
+            state            = 'ChocolateyNotInstalled'
         }
     }
     
@@ -128,11 +128,11 @@ function Get-PackageInfo {
     $outdatedPackages = Get-ChocolateyOutdatedPackages
     
     $info = @{
-        packageName      = $PackageName
-        ensure           = 'Absent'
+        packageName      = $PackageName
+        ensure           = 'Absent'
         installedVersion = $null
-        latestVersion    = $null
-        state            = 'NotInstalled'
+        latestVersion    = $null
+        state            = 'NotInstalled'
     }
     
     if ($installedPackages.ContainsKey($PackageName)) {
@@ -176,13 +176,13 @@ function Get-ResourceState {
     }
     catch {
         return @{
-            packageName      = $InputObject.packageName
-            ensure           = 'Absent'
-            version          = 'latest'
+            packageName      = $InputObject.packageName
+            ensure           = 'Absent'
+            version          = 'latest'
             installedVersion = $null
-            latestVersion    = $null
-            state            = 'Error'
-            error            = $_.Exception.Message
+            latestVersion    = $null
+            state            = 'Error'
+            error            = $_.Exception.Message
         }
     }
 }
@@ -222,11 +222,11 @@ function Test-ResourceState {
     }
     catch {
         return @{
-            packageName     = $InputObject.packageName
-            ensure          = 'Absent'
-            version         = 'latest'
+            packageName     = $InputObject.packageName
+            ensure          = 'Absent'
+            version         = 'latest'
             _inDesiredState = $false
-            error           = $_.Exception.Message
+            error           = $_.Exception.Message
         }
     }
 }
@@ -290,14 +290,14 @@ function Set-ResourceState {
                 
                 $commandOutput = & $script:ChocoExe $action $argsList *>&1 | Out-String
                 
-                if ($LASTEXITCODE -ne 0) {
-                    throw "Installation/Downgrade failed (Exit code $LASTEXITCODE). Output: `n$commandOutput"
-                }
-            }
-        }
-        else  {
-            & $env:ProgramData\chocolatey\choco.exe uninstall $InputObject.packageName  $chocoArgs
-
+                if ($LASTEXITCODE -ne 0) {
+                    throw "Installation/Downgrade failed (Exit code $LASTEXITCODE). Output: `n$commandOutput"
+                }
+            }
+        }
+        else {
+            # Désinstallation si Present
+            & $script:ChocoExe uninstall $InputObject.packageName  $chocoArgs
         }
         
         # Invalidate caches pour lire le nouvel état
@@ -329,10 +329,9 @@ try {
 }
 catch {
     $errorOutput = @{
-        packageName     = $inputObject.packageName
-        ensure          = 'Absent'
-        version         = 'latest'
-        error           = $_.Exception.Message
+        packageName     = $inputObject.packageName
+        ensure          = 'Absent'
+        error           = $_.Exception.Message
         _inDesiredState = $false
     }
     

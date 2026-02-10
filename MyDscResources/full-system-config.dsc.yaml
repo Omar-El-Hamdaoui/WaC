@@ -1,7 +1,7 @@
 $schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/v3/config/document.json
 metadata:
   name: DevelopmentWorkstationSetup
-  description: Configuration d'un poste de développement 
+  description: Configuration d'un poste de développement
   version: 1.0.0
 
 variables:
@@ -21,7 +21,7 @@ resources:
       packageName: git
       ensure: Present
     dependsOn:
-    - "[resourceId('MyCompany.Installer/MyChocolatey', 'Install Chocolatey Package Manager')]"
+      - "[resourceId('MyCompany.Installer/MyChocolatey', 'Install Chocolatey Package Manager')]"
 
   - name: Chocolatey Package - 7zip
     type: MyCompany.Packages/ChocolateyPackage
@@ -29,7 +29,7 @@ resources:
       packageName: 7zip
       ensure: Present
     dependsOn:
-    - "[resourceId('MyCompany.Installer/MyChocolatey', 'Install Chocolatey Package Manager')]"
+      - "[resourceId('MyCompany.Installer/MyChocolatey', 'Install Chocolatey Package Manager')]"
 
   - name: Chocolatey Package - postman
     type: MyCompany.Packages/ChocolateyPackage
@@ -37,7 +37,7 @@ resources:
       packageName: postman
       ensure: Present
     dependsOn:
-    - "[resourceId('MyCompany.Installer/MyChocolatey', 'Install Chocolatey Package Manager')]"
+      - "[resourceId('MyCompany.Installer/MyChocolatey', 'Install Chocolatey Package Manager')]"
 
   - name: Development Tools List
     type: MyCompany.Storage/FileManager

@@ -9,21 +9,7 @@ function Test-ScoopInstalled {
     return [bool]$scoopPath
 }
 
-function Get-ScoopVersion {
-    try {
-        if (Test-ScoopInstalled) {
-            $version = & scoop --version 2>$null
-            if ($version -match 'v?(\d+\.\d+\.\d+)') {
-                return $Matches[1]
-            }
-            return $version.Trim()
-        }
-        return $null
-    }
-    catch {
-        return $null
-    }
-}
+
 
 function Get-ScoopPath {
     try {
@@ -53,19 +39,7 @@ function Get-ResourceState {
             name   = if ($InputObject.name) { $InputObject.name } else { 'Scoop' }
             ensure = if ($isInstalled) { 'Present' } else { 'Absent' }
         }
-
-        # Ajouter des infos supplémentaires si installé
-        if ($isInstalled) {
-            $version = Get-ScoopVersion
-            if ($version) {
-                $state.version = $version
-            }
-
-            $installPath = Get-ScoopPath
-            if ($installPath) {
-                $state.installPath = $installPath
-            }
-        }
+        
         return $state
     }
     catch {
@@ -111,14 +85,12 @@ function Set-ResourceState {
 
         Invoke-RestMethod -Uri 'https://get.scoop.sh' -OutFile $installerPath
 
-        & $installerPath 2>&1 
+        & $installerPath
     }
 
     else {
-
         #scoop uninstall scoop --purge
         Remove-Item -Recurse -Force ~\scoop
-
     }    
 }
 

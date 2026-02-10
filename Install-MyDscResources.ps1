@@ -150,26 +150,27 @@ Write-Host " Dossier des ressources identifié : $dscResourcePath" -ForegroundCo
 $resourceDirs = Get-ChildItem $dscResourcePath -Directory
 
 # ====================================
-# ÉTAPE 4 : CONFIGURATION DSC_RESOURCE_PATH
+# ÉTAPE 4 : CONFIGURATION PATH
 # ====================================
-Write-Host "`n4. Configuration de DSC_RESOURCE_PATH..." -ForegroundColor Yellow
+Write-Host "`n4. Configuration de PATH..." -ForegroundColor Yellow
 
 # 1. On construit une seule liste avec TOUS les chemins nécessaires
 $pathList = @(
     $resourceDirs.FullName                                  # Tes ressources
     $PSHOME                                                 # PowerShell 7 
     [Environment]::SystemDirectory                          # System32 
-    (Get-Module Microsoft.WinGet.DSC -ListAvailable).ModuleBase # WinGet 
+    (Get-Module Microsoft.WinGet.DSC -ListAvailable).ModuleBase # WinGet
+    $env:Path.Split([IO.Path]::PathSeparator)                     # Les chemins déjà présents dans PATH 
 ) | Where-Object { $_ } | Select-Object -Unique
 
 # 2. On joint tout avec le séparateur (;)
 $finalPath = $pathList -join [IO.Path]::PathSeparator
 
 # 3. On applique la configuration (Persistant + Session)
-[Environment]::SetEnvironmentVariable("DSC_RESOURCE_PATH", $finalPath, "User")
-$env:DSC_RESOURCE_PATH = $finalPath
+[Environment]::SetEnvironmentVariable("PATH", $finalPath, "User")
+$env:PATH = $finalPath
 
-Write-Host " ✓ Variable DSC_RESOURCE_PATH mise à jour." -ForegroundColor Green
+Write-Host " ✓ Variable PATH mise à jour." -ForegroundColor Green
 Write-Host "   Chemin : $finalPath" -ForegroundColor DarkGray
 
 
