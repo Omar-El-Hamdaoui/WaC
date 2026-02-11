@@ -53,6 +53,14 @@ function Get-ChocolateyVersion {
 function Get-ResourceState {
     param($InputObject)
     
+    $logEntry = @{
+        message = "Hello from Get-ResourceState "
+        level   = "error"
+    }
+    
+    $jsonLog = $logEntry | ConvertTo-Json -Compress
+    [Console]::Error.WriteLine($jsonLog)
+
     try {
         $isInstalled = Test-ChocolateyInstalled
         

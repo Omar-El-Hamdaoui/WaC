@@ -24,7 +24,7 @@
       "Set"
     ],
     "input": "stdin",
-    "implementsPretest": true
+    "implementsPretest": false
   },
   "test": {
     "executable": "pwsh",

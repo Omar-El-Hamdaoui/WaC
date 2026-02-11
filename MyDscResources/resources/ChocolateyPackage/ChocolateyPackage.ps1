@@ -159,7 +159,6 @@ function Get-PackageInfo {
 
 function Get-ResourceState {
     param($InputObject)
-    
     try {
         $packageName = $InputObject.packageName
         
@@ -190,6 +189,14 @@ function Get-ResourceState {
 function Test-ResourceState {
     param($InputObject)
     
+    $logEntry = @{
+        message = "Hello from Test-ResourceState "
+        level   = "error"
+    }
+    
+    $jsonLog = $logEntry | ConvertTo-Json -Compress
+    [Console]::Error.WriteLine($jsonLog)
+
     try {
         $currentState = Get-ResourceState -InputObject $InputObject
         $desiredEnsure = if ($InputObject.ensure) { $InputObject.ensure } else { 'Present' }
@@ -233,6 +240,14 @@ function Test-ResourceState {
 
 function Set-ResourceState {
     param($InputObject)
+
+    $logEntry = @{
+        message = "Hello from Set-ResourceState "
+        level   = "error"
+    }
+    
+    $jsonLog = $logEntry | ConvertTo-Json -Compress
+    [Console]::Error.WriteLine($jsonLog)
     
     try {
         $currentState = Get-ResourceState -InputObject $InputObject
