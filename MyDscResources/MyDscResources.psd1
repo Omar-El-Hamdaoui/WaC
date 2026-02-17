@@ -6,7 +6,7 @@
 # Generated on: 11/26/2025
 #
 
-@{
+@{ 
 
 # Script module or binary module file associated with this manifest.
 RootModule = 'MyDscResources.psm1'
