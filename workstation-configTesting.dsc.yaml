@@ -1,14 +1,27 @@
 $schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/v3/bundled/config/document.json
 resources:
-  - name: InstallPowerBI
-    type: Microsoft.DSC/PowerShell
+  - name: Scoop Bucket - versions
+    type: MyCompany.Installer/MyScoopBucket
     properties:
-      resources:
-        - name: Microsoft.PowerBI
-          type: Microsoft.WinGet.DSC/WinGetPackage
-          properties:
-            Id: Microsoft.PowerBI
-            Ensure: Present
+      name: versions
+      ensure: Present
+  # - name: Scoop Package - dotnet3-sdk
+  #   type: MyCompany.Packages/ScoopPackage
+  #   properties:
+  #     packageName: dotnet3-sdk
+  #     ensure: Present
+  #     version: latest
+  #     dependsOn: -"[resourceId('MyCompany.Installer/MyScoopBucket', 'Scoop Bucket - versions')]"
+
+  # - name: InstallPowerBI
+  #   type: Microsoft.DSC/PowerShell
+  #   properties:
+  #     resources:
+  #       - name: Microsoft.PowerBI
+  #         type: Microsoft.WinGet.DSC/WinGetPackage
+  #         properties:
+  #           Id: Microsoft.PowerBI
+  #           Ensure: Present
 
   # - name: WinGetPackage - Fork.Fork
   #   type: Microsoft.WinGet.DSC

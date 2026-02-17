@@ -1,3 +1,4 @@
+#Requires -RunAsAdministrator
 [CmdletBinding()]
 param(
     [Parameter()]
@@ -30,7 +31,7 @@ if (-not (Test-Path $targetPath)) {
 Install-Module powershell-yaml
 Install-Module PSDscResources -Repository PSGallery
 Install-Module PSDesiredStateConfiguration -Repository PSGallery
-Install-Module Microsoft.WinGet.DSC -AllowPrerelease
+Install-Module Microsoft.WinGet.DSC
 Install-Module Microsoft.VisualStudio.DSC
 
 
@@ -74,7 +75,7 @@ $existingRepo = Get-PSRepository -Name $RepositoryName -ErrorAction SilentlyCont
 
 if (-not $existingRepo) {
     Write-Host "  Repository '$RepositoryName' non trouvé, enregistrement..." -ForegroundColor Gray
-    Register-PSRepository -Name $RepositoryName -SourceLocation $RepositoryPath -InstallationPolicy Trusted
+    Register-PSResourceRepository -Name $RepositoryName -Uri $RepositoryPath -Trusted
     Write-Host "  ✓ Repository enregistré" -ForegroundColor Green
 } else {
     Write-Host "  ✓ Repository déjà enregistré" -ForegroundColor Green

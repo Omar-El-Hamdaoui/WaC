@@ -32,12 +32,12 @@ resources:
   #                   return (scoop bucket list | Select-String 'versions') -ne $null
   #                 SetScript: |
   #                   scoop bucket add versions
-  - name: Scoop Package - dotnet3-sdk
-    type: MyCompany.Packages/ScoopPackage
-    properties:
-      packageName: versions/dotnet3-sdk
-      ensure: Present
-      version: latest
+  # - name: Scoop Package - dotnet3-sdk
+  #   type: MyCompany.Packages/ScoopPackage
+  #   properties:
+  #     packageName: versions/dotnet3-sdk
+  #     ensure: Present
+  #     version: latest
   # - name: Scoop Package - dotnet5-sdk
   #   type: MyCompany.Packages/ScoopPackage
   #   properties:
@@ -68,12 +68,12 @@ resources:
   #     packageName: gh
   #     ensure: Present
   #     version: latest
-  # - name: Scoop Package - git
-  #   type: MyCompany.Packages/ScoopPackage
-  #   properties:
-  #     packageName: git
-  #     ensure: Present
-  #     version: latest
+  - name: Scoop Package - git
+    type: MyCompany.Packages/ScoopPackage
+    properties:
+      packageName: git
+      ensure: Present
+      version: latest
   # - name: Scoop Package - nuget
   #   type: MyCompany.Packages/ScoopPackage
   #   properties:

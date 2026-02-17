@@ -155,6 +155,7 @@ $originalUICulture = [System.Threading.Thread]::CurrentThread.CurrentUICulture
 
 try {
     $env:DOTNET_CLI_UI_LANGUAGE = "en-US"
+    $env:NUGET_CLI_LANGUAGE = "en-US"
     [System.Threading.Thread]::CurrentThread.CurrentCulture = [System.Globalization.CultureInfo]::new("en-US")
     [System.Threading.Thread]::CurrentThread.CurrentUICulture = [System.Globalization.CultureInfo]::new("en-US")
     

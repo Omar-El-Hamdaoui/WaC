@@ -2,7 +2,7 @@
 # Tests Pester pour valider la ressource DSC Scoop
 
 BeforeAll {
-    $scriptPath = Join-Path $PSScriptRoot "..\resources\Scoop\Scoop.ps1"
+    $scriptPath = Join-Path $PSScriptRoot "..\resources\Scoop\MyScoop.ps1"
     . $scriptPath
 }
 
