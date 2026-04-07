@@ -228,17 +228,20 @@ function ConfigurationPath {
 
     $installedModule = Get-Module -Name MyResources -ListAvailable | Select-Object -First 1
 
-    $dscResourcePath = $installedModule.ModuleBase
+    #$dscResourcePath = $installedModule.ModuleBase
+	$DicoverResourceExtensionPath = $installedModule.ModuleBase
 
-    Write-Host " Dossier des ressources identifié : $dscResourcePath" -ForegroundColor Gray
 
-    $resourceDirs = Get-ChildItem $dscResourcePath -Directory
+   # Write-Host " Dossier des ressources identifié : $dscResourcePath" -ForegroundColor Gray
+
+    #$resourceDirs = Get-ChildItem $dscResourcePath -Directory
 
     $pathList = @(
-        $resourceDirs.FullName                                  # Les ressources
-        $PSHOME                                                 # PowerShell 7 
+        #$resourceDirs.FullName                                  # Les ressources
+        #$PSHOME                                                 # PowerShell 7 
         #[Environment]::SystemDirectory                          # System32 
-        (Get-Module Microsoft.WinGet.DSC -ListAvailable).ModuleBase # WinGet
+		$DicoverResourceExtensionPath
+        #(Get-Module Microsoft.WinGet.DSC -ListAvailable).ModuleBase # WinGet
         $env:Path.Split([IO.Path]::PathSeparator)                     # Les chemins déjà présents dans PATH 
     ) | Where-Object { $_ } | Select-Object -Unique
 
