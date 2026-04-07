@@ -186,24 +186,24 @@ function EnregistrementRepository {
     }
 }
 
-function SuppressionAnciennesRessources {
-    Write-Host "   Vérification des anciennes versions..." -ForegroundColor Gray
+# function SuppressionAnciennesRessources {
+#     Write-Host "   Vérification des anciennes versions..." -ForegroundColor Gray
 
-    $oldVersions = Get-Module -Name MyResources -ListAvailable
+#     $oldVersions = Get-Module -Name MyResources -ListAvailable
 
-    if ($oldVersions) {
-        foreach ($ver in $oldVersions) {
-            Write-Host "   Suppression de la version existante : $($ver.Version) située dans $($ver.ModuleBase)" -ForegroundColor Magenta
+#     if ($oldVersions) {
+#         foreach ($ver in $oldVersions) {
+#             Write-Host "   Suppression de la version existante : $($ver.Version) située dans $($ver.ModuleBase)" -ForegroundColor Magenta
 
-            Remove-Item -Path $ver.ModuleBase -Recurse -Force -ErrorAction Stop
-            Write-Host "   ✓ Version $($ver.Version) supprimée." -ForegroundColor Green
-        }
-    }
-    else {
-        Write-Host "   ✓ Aucune version précédente de MyResources détectée" -ForegroundColor Green
-    }
+#             Remove-Item -Path $ver.ModuleBase -Recurse -Force -ErrorAction Stop
+#             Write-Host "   ✓ Version $($ver.Version) supprimée." -ForegroundColor Green
+#         }
+#     }
+#     else {
+#         Write-Host "   ✓ Aucune version précédente de MyResources détectée" -ForegroundColor Green
+#     }
 
-}
+# }
 
 
 function ConfigurationPath {
@@ -255,10 +255,10 @@ $functions = @(
         Message  = "Enregistrement du repository local"
         Function = "EnregistrementRepository"
     },
-    @{
-        Message  = "Suppression des anciennes versions de ressources"
-        Function = "SuppressionAnciennesRessources"
-    },
+    # @{
+    #     Message  = "Suppression des anciennes versions de ressources"
+    #     Function = "SuppressionAnciennesRessources"
+    # },
     @{
         Message  = "Installation des ressources DSC "
         Function = "Install-Resources"
