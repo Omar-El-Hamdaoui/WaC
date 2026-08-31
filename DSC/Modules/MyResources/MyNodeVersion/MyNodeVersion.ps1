@@ -32,12 +32,11 @@ function Get-ResourceState {
     else {
         $majorVersion = [int]($version -split '\.')[0]
 
-        if ($latestVersions.ContainsKey($majorVersion)) {
-            $current.latestVersion = $latestVersions[$majorVersion]
-        }
-        else {
+        if (-not $latestVersions.ContainsKey($majorVersion)) {
             throw "Major version $majorVersion is not available."
         }
+
+        $current.latestVersion = $latestVersions[$majorVersion]
     }
 
     $nvmInstalledVersions = Get-NvmInstalledVersions
@@ -46,17 +45,16 @@ function Get-ResourceState {
     Where-Object { $_.StartsWith("$majorVersion.") } |
     Select-Object -First 1
 
-    if ($null -ne $versionInstalled) {
-        $current.currentVersion = $versionInstalled
-
-        $nvmCurrentVersion = Get-NvmCurrentVersion
-
-        $current.ensure = $nvmCurrentVersion -eq $current.latestVersion ? 'Used' : 'Present'
-
-        if ($current.currentVersion -and $current.latestVersion) {
-            $current.state = $current.currentVersion -eq $current.latestVersion ? 'Current' : 'Stale'
-        }
+    if ($null -eq $versionInstalled) {
+        return $current
     }
+
+    $current.currentVersion = $versionInstalled
+
+    $nvmCurrentVersion = Get-NvmCurrentVersion
+
+    $current.ensure = $nvmCurrentVersion -eq $current.latestVersion ? 'Used' : 'Present'
+    $current.state = $current.currentVersion -eq $current.latestVersion ? 'Current' : 'Stale'
 
     return $current
 }
