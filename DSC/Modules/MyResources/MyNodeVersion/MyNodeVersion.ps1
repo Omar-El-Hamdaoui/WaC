@@ -101,10 +101,7 @@ function Set-ResourceState {
     $ensure = $InputObject.ensure
 
     if ($ensure -eq 'Absent') {
-        if ($testResult.ensure -ne 'Absent') {
-            & nvm uninstall $testResult.currentVersion
-        }
-
+        & nvm uninstall $testResult.currentVersion
         return
     }
 
